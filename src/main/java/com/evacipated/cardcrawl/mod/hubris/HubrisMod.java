@@ -100,6 +100,7 @@ public class HubrisMod implements
     public static final boolean hasMimicMod;
     public static final boolean hasMysticMod;
     public static final boolean hasDisciple;
+    public static final boolean hasBard;
 
     static
     {
@@ -130,6 +131,10 @@ public class HubrisMod implements
         hasDisciple = Loader.isModLoaded("chronomuncher");
         if (hasDisciple) {
             logger.info("Detected Disciple");
+        }
+        hasBard = Loader.isModLoaded("bard");
+        if (hasBard) {
+            logger.info("Detected Bard");
         }
     }
 
@@ -293,7 +298,7 @@ public class HubrisMod implements
     {
         try {
             autoAddCards();
-        } catch (URISyntaxException | IllegalAccessException | InstantiationException | NotFoundException | CannotCompileException e) {
+        } catch (URISyntaxException | IllegalAccessException | InstantiationException | NotFoundException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         if (hasInfiniteSpire) {
@@ -374,6 +379,7 @@ public class HubrisMod implements
         //BaseMod.addRelic(new Tomato(), RelicType.SHARED);
         BaseMod.addRelic(new Macrotransations(), RelicType.SHARED);
         BaseMod.addRelic(new GrandSneckoEye(), RelicType.SHARED);
+        //BaseMod.addRelic(new Rogue(), RelicType.SHARED);
 
         // Ironclad only
         BaseMod.addRelic(new IronBody(), RelicType.RED);
@@ -410,8 +416,8 @@ public class HubrisMod implements
             case RUS:
                 toReturn += "rus/";
                 break;
-            case ENG:
-                toReturn += "eng/";
+            case ZHS:
+                toReturn += "zhs/";
                 break;
             default:
                 toReturn += "eng/";
@@ -454,7 +460,7 @@ public class HubrisMod implements
         list.add(new CustomMod("hubris:Mercantile", "b", false));
     }
 
-    private static void autoAddCards() throws URISyntaxException, IllegalAccessException, InstantiationException, NotFoundException, CannotCompileException
+    private static void autoAddCards() throws URISyntaxException, IllegalAccessException, InstantiationException, NotFoundException, ClassNotFoundException
     {
         ClassFinder finder = new ClassFinder();
         URL url = HubrisMod.class.getProtectionDomain().getCodeSource().getLocation();
@@ -496,7 +502,7 @@ public class HubrisMod implements
             }
 
             System.out.println(classInfo.getClassName());
-            AbstractCard card = (AbstractCard) Loader.getClassPool().toClass(cls).newInstance();
+            AbstractCard card = (AbstractCard) Loader.getClassPool().getClassLoader().loadClass(cls.getName()).newInstance();
             BaseMod.addCard(card);
             if (cls.hasAnnotation(CardNoSeen.class)) {
                 UnlockTracker.hardUnlockOverride(card.cardID);
@@ -507,11 +513,21 @@ public class HubrisMod implements
     }
 
     @Override
-    public int receiveMapHPChange(int amount)
+    public int receiveMaxHPChange(int amount)
     {
+        if (AbstractDungeon.player != null && AbstractDungeon.player.hasRelic(Rogue.ID)) {
+            Rogue relic = (Rogue) AbstractDungeon.player.getRelic(Rogue.ID);
+            amount = relic.onMaxHPChange(amount);
+        }
+        if (amount == 0) {
+            return amount;
+        }
         if (AbstractDungeon.player != null && AbstractDungeon.player.hasRelic(FruitBowl.ID)) {
             FruitBowl relic = (FruitBowl) AbstractDungeon.player.getRelic(FruitBowl.ID);
             amount = relic.onMaxHPChange(amount);
+        }
+        if (amount == 0) {
+            return amount;
         }
         if (AbstractDungeon.player != null && AbstractDungeon.player.hasRelic(BottledHeart.ID)) {
             BottledHeart relic = (BottledHeart) AbstractDungeon.player.getRelic(BottledHeart.ID);

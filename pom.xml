@@ -7,11 +7,11 @@
     <name>Hubris</name>
     <groupId>com.evacipated.cardcrawl.mod</groupId>
     <artifactId>hubris</artifactId>
-    <version>0.22.0</version>
+    <version>0.24.8</version>
 
     <properties>
-        <SlayTheSpire.version>01-23-2019</SlayTheSpire.version>
-        <ModTheSpire.version>3.8.0</ModTheSpire.version>
+        <SlayTheSpire.version>12-22-2020</SlayTheSpire.version>
+        <ModTheSpire.version>3.11.0</ModTheSpire.version>
     </properties>
 
     <dependencies>
@@ -91,6 +91,13 @@
             <version>0.14.8</version>
             <scope>system</scope>
             <systemPath>${basedir}/../_ModTheSpire/mods/TheMystic.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.evacipated.cardcrawl.mod</groupId>
+            <artifactId>bard</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/../_ModTheSpire/mods/Bard.jar</systemPath>
         </dependency>
     </dependencies>
 

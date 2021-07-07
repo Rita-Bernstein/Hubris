@@ -1,5 +1,6 @@
 package com.evacipated.cardcrawl.mod.hubris.relics;
 
+import basemod.Pair;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.mod.hubris.cards.curses.SpiceAddiction;
@@ -15,7 +16,6 @@ import com.megacrit.cardcrawl.powers.DexterityPower;
 import com.megacrit.cardcrawl.powers.StrengthPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.vfx.TextAboveCreatureEffect;
-import javafx.util.Pair;
 
 public class Spice extends HubrisRelic
 {
@@ -268,6 +268,11 @@ public class Spice extends HubrisRelic
 
     private static int replaceWithSpiceChance()
     {
+        // Happens because of other mods
+        if (AbstractDungeon.player == null) {
+            return 0;
+        }
+
         AbstractRelic spice = AbstractDungeon.player.getRelic(Spice.ID);
 
         if (spice == null) {
